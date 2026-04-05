@@ -8,20 +8,18 @@
         .active-song { background-color: #fef3c7; border-left: 4px solid #f59e0b; }
     </style>
 </head>
-<body class="bg-gray-100 p-8">
-
-    <div class="max-w-6xl mx-auto mb-8 flex items-center gap-4">
-        <div class="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
-        <img src="mikunibd2026.png" alt="392 Logo" class="w-full h-full object-cover">
-    </div>
-    <h1 class="text-2xl font-bold text-gray-800 uppercase tracking-wider">
-        Mikuni Shimokawa Birthday Live ⭐️
-    </h1>
+<body class="bg-gray-100 p-4 md:p-8"> <div class="max-w-6xl mx-auto mb-8 flex items-center gap-4">
+        <div class="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center bg-gray-100 border">
+            <img src="mikunibd2026.png" alt="392 Logo" class="w-full h-full object-cover">
+        </div>
+        <h1 class="text-xl md:text-2xl font-bold text-gray-800 uppercase tracking-wider">
+            Mikuni Shimokawa Birthday Live ⭐️
+        </h1>
     </div>
     
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-8"></div>
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
 
-        <div class="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md">
+        <div class="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md order-2 md:order-1">
             <h2 class="text-xl font-bold mb-4 border-b pb-2">Setlist</h2>
             <ul id="setlist" class="space-y-2">
                 <li class="p-2 hover:bg-gray-50 rounded cursor-pointer border flex justify-between items-center" data-video-id="TMoOdbjcjGU">
@@ -78,20 +76,19 @@
                 <button id="next-btn" class="flex-1 bg-gray-800 text-white py-2 rounded hover:bg-gray-700">次の曲へ</button>
                 <button id="random-btn" class="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700">ランダム</button>
             </div>
-        </div>   
         </div>
 
-        <div class="w-full md:w-2/3"></div>
+        <div class="w-full md:w-2/3 order-1 md:order-2">
             <div class="aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
-                <div id="player"></div> </div>
+                <div id="player"></div>
+            </div>
             <div class="mt-4 p-4 bg-white rounded shadow text-sm text-gray-600">
                 <p>現在再生中: <span id="current-title" class="font-bold text-gray-900">未選択</span></p>
             </div>
         </div>
-    </div>
 
-    <script>
-        // 1. APIの読み込み
+    </div> <script>
+        // --- JS部分は変更なし ---
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -101,19 +98,17 @@
         var currentVideoIndex = -1;
         const songs = document.querySelectorAll('#setlist li');
 
-        // 2. APIの準備ができたら呼ばれる関数
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
-                videoId: 'rjnKuzCx0qs', // 初期表示
+                videoId: 'TMoOdbjcjGU', // 1曲目を初期表示にしてみました
                 events: {
                     'onStateChange': onPlayerStateChange
                 }
             });
         }
 
-        // 3. 各曲をクリックした時の処理
         songs.forEach((song, index) => {
             song.addEventListener('click', () => {
                 playVideo(index);
@@ -128,24 +123,20 @@
             player.loadVideoById(videoId);
             document.getElementById('current-title').innerText = title;
 
-            // デザイン的なハイライト
             songs.forEach(s => s.classList.remove('active-song'));
             songs[index].classList.add('active-song');
         }
 
-        // 4. 「次の曲」ボタン
         document.getElementById('next-btn').addEventListener('click', () => {
             let nextIndex = (currentVideoIndex + 1) % songs.length;
             playVideo(nextIndex);
         });
 
-        // 5. 「ランダム」ボタン
         document.getElementById('random-btn').addEventListener('click', () => {
             let randomIndex = Math.floor(Math.random() * songs.length);
             playVideo(randomIndex);
         });
 
-        // 6. 動画が終わったら自動で次へ
         function onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.ENDED) {
                 document.getElementById('next-btn').click();
