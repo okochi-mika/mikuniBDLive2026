@@ -2,10 +2,11 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> // スマホに対応用
     <title>mikuniBDLive2026 - Setlist Player</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* 【メモ】JSで曲が選ばれた時に、このクラスを付け外しして「今これ聴いてるよ」を視覚化する */
         .active-song { background-color: #fef3c7; border-left: 4px solid #f59e0b; }
     </style>
 </head>
@@ -88,8 +89,13 @@
             </div>
         </div>
 
-    </div> <script>
-        // JS部分は以前と同じです
+    </div>
+    <script>
+        /* 【ノート：JavaScriptの役割】
+          GitHub Pagesは「静的」だけど、このJSが動くことで「動的」な体験を作っている。
+          1. YouTube APIと通信して動画を操る。
+          2. クリックされた曲のIDを特定して中身を書き換える。
+        */
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -103,12 +109,18 @@
             player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
+                // 【初期状態】ページを開いた時に最初に出る曲のID。
                 videoId: 'TMoOdbjcjGU', 
                 events: {
                     'onStateChange': onPlayerStateChange
                 }
             });
         }
+
+        /* 【将来の野望メモ：ハイブリッドアプリ化】
+          もしアプリにするなら、この下の処理を「スマホの通知」と連動させたり、
+          「LocalStorage」を使って自分の再生回数をカウントしたりする機能を追加したい。
+        */
 
         songs.forEach((song, index) => {
             song.addEventListener('click', () => {
@@ -139,6 +151,7 @@
         });
 
         function onPlayerStateChange(event) {
+            // 曲が終わったら自動で「次へ」ボタンを擬似クリックする仕組み
             if (event.data == YT.PlayerState.ENDED) {
                 document.getElementById('next-btn').click();
             }
